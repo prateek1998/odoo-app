@@ -74,7 +74,7 @@
                                     <div class="row d-flex align-items-center">
                                         <h4 class="col-xs-6 col-sm-6 col-md-8">Manual</h1>
                                         {% if user.is_superuser %}
-                                            <button type="button" class="btn btn-outline-dark col-xs-6 col-sm-6 col-md-4">Edit</button>
+                                            <button type="button" class="btn btn-outline-dark col-xs-6 col-sm-6 col-md-4" data-bs-toggle="modal" data-bs-target="#configurationModal">Edit</button>
                                         {% endif %}
                                     </div>
                                     <div class="form-check form-check-inline mb-3">
@@ -133,6 +133,31 @@
                         </div>
                     </div> 
                 </main>
+                <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
+                <div class="modal fade" id="configurationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"> -->
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Edit Manual Configuration</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" value="10.210.210.117" type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
+                                <label for="floatingInput">Terminal/proxy ip</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" type="text" value="10.101.101.79" name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
+                                <label for="floatingInput">TFTP Server</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-success">Save changes</button>
+                        </div>
+                      </div>
+                    </div>
+                </div>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
