@@ -93,32 +93,32 @@
                                     </div>
                                     {% if user.is_superuser %}
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" value="10.210.210.117" type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
+                                        <input class="form-control" value={{manual_data.proxy_ip}} type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
                                         <label for="floatingInput">Terminal/proxy ip</label>
                                     </div>
                                     {% else %}
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" disabled value="10.210.210.117" type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
+                                        <input class="form-control" disabled value={{manual_data.proxy_ip}} type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
                                         <label for="floatingInput">Terminal/proxy ip</label>
                                     </div>
                                     {% endif %}        
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" value="2004" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                        <input class="form-control" value={{manual_data.port_no}} oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                                         maxlength="4" type="number" name="port_no" placeholder="Enter Port No" aria-label="Enter Port No" aria-describedby="btnNavbarSearch" />
                                         <label for="floatingInput">Port No</label>
                                     </div>
                                     <div class="form-floating mb-3">
-                                        <input class="form-control"  value="WC_16_10_0015.swi" type="text" name="firmware" placeholder="Enter Firmware" aria-label="Enter Firmware" aria-describedby="btnNavbarSearch" />
+                                        <input class="form-control"  value={{manual_data.firmware}} type="text" name="firmware" placeholder="Enter Firmware" aria-label="Enter Firmware" aria-describedby="btnNavbarSearch" />
                                         <label for="floatingInput">Firmware</label>
                                     </div>
                                     {% if user.is_superuser %}
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" value="10.101.101.79" name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
+                                        <input class="form-control" type="text" value={{manual_data.tftp_server}} name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
                                         <label for="floatingInput">TFTP Server</label>
                                     </div>
                                     {% else %}
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" disabled type="text" value="10.101.101.79" name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
+                                        <input class="form-control" disabled type="text" value={{manual_data.tftp_server}} name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
                                         <label for="floatingInput">TFTP Server</label>
                                     </div>
                                     {% endif %}                                
@@ -134,7 +134,7 @@
                     </div> 
                 </main>
                 <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
-                <div class="modal fade" id="configurationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"> -->
+                <div class="modal fade" id="configurationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                       <div class="modal-content">
                         <div class="modal-header">
@@ -142,18 +142,21 @@
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" value="10.210.210.117" type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
-                                <label for="floatingInput">Terminal/proxy ip</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" value="10.101.101.79" name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
-                                <label for="floatingInput">TFTP Server</label>
-                            </div>
+                            <form enctype="multipart/form-data" class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action = "/update_manual" method = "POST" >
+                                {% csrf_token %} 
+                                <div class="form-floating mb-3">
+                                    <input class="form-control" value="10.210.210.117" type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
+                                    <label for="floatingInput">Terminal/proxy ip</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input class="form-control" type="text" value="10.101.101.79" name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
+                                    <label for="floatingInput">TFTP Server</label>
+                                </div>
+                            </form>
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-success">Save changes</button>
+                          <button type="button" class="btn btn-success" type="submit">Save changes</button>
                         </div>
                       </div>
                     </div>

@@ -51,8 +51,9 @@ def logout_view(request):
 
 @login_required(login_url="login")
 def app_view(request):
-    posts = Manual.objects.all()
-    print(posts)# = Manual.objects.all())
+    manual_data = list(Manual.objects.values())[0]
+    # return HttpResponse(posts),'data')
+    # print(manual_data)# = Manual.objects.all())
     try:
         current_user = request.user
         if request.method == 'POST':
@@ -102,10 +103,19 @@ def app_view(request):
                 else: 
                     print("hello aruba cx")
                 
-        return render(request, 'appbase.html',{'current_user':current_user})
+        return render(request, 'appbase.html',{'current_user':current_user,"manual_data":manual_data})
     except Exception:
-        return render(request, 'appbase.html',{'current_user':current_user})
-    
+        return render(request, 'appbase.html',{'current_user':current_user,"manual_data":manual_data})
+
+def edit_manual(request):
+    return render(request, 'edit_manual.html')
+         
+def update_manual_data(request):
+    print("update_data")
+    if request.method == 'POST':
+        input_data = request.POST
+        input_data = input_data.dict()
+        print("input data",input_data)
 
 def home_view(request):
     return redirect('/login')
