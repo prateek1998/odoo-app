@@ -57,39 +57,80 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <form enctype="multipart/form-data" class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action = "" method = "POST" >
-                            {% csrf_token %} 
-                            <h4 class="mt-4">Odoo Manufacturing Id</h1>
-                            <div class="input-group">
-                                <input class="form-control" type="text" name="odoo_id" placeholder="Enter Odoo Id" aria-label="Enter Odoo Id" aria-describedby="btnNavbarSearch" />
-                                <button class="btn btn-primary" id="btnNavbarSearch" type="submit">Submit</button>
+                        <div class="row">
+                            <div class="col-lg-3 left-container">
+                                <form enctype="multipart/form-data" class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action = "" method = "POST" >
+                                    {% csrf_token %} 
+                                    <h4 class="mt-4">Odoo Manufacturing Id</h1>
+                                    <div class="input-group">
+                                        <input class="form-control" type="text" name="odoo_id" placeholder="Enter Odoo Id" aria-label="Enter Odoo Id" aria-describedby="btnNavbarSearch" />
+                                        <button class="btn btn-primary" id="btnNavbarSearch" type="submit">Submit</button>
+                                    </div>
+                                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                        <div class="border-bottom w-100 ml-5"></div>
+                                        <span class="px-2 text-muted font-weight-bold text-muted">OR</span>
+                                        <div class="border-bottom w-100 mr-5"></div>
+                                    </div>
+                                    <div class="row d-flex align-items-center">
+                                        <h4 class="col-xs-6 col-sm-6 col-md-8">Manual</h1>
+                                        {% if user.is_superuser %}
+                                            <button type="button" class="btn btn-outline-dark col-xs-6 col-sm-6 col-md-4">Edit</button>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-check form-check-inline mb-3">
+                                        <input class="form-check-input" type="radio" name="switch_type"
+                                            id="switch_type1" value="aruba" checked>
+                                        <label class="form-check-label" for="switch_type1">
+                                            Aruba
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-3">
+                                        <input class="form-check-input" type="radio" name="switch_type"
+                                            id="switch_type2" value="aruba-cx">
+                                        <label class="form-check-label" for="switch_type2">
+                                            Aruba cx
+                                        </label>
+                                    </div>
+                                    {% if user.is_superuser %}
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" value="10.210.210.117" type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
+                                        <label for="floatingInput">Terminal/proxy ip</label>
+                                    </div>
+                                    {% else %}
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" disabled value="10.210.210.117" type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
+                                        <label for="floatingInput">Terminal/proxy ip</label>
+                                    </div>
+                                    {% endif %}        
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" value="2004" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                        maxlength="4" type="number" name="port_no" placeholder="Enter Port No" aria-label="Enter Port No" aria-describedby="btnNavbarSearch" />
+                                        <label for="floatingInput">Port No</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control"  value="WC_16_10_0015.swi" type="text" name="firmware" placeholder="Enter Firmware" aria-label="Enter Firmware" aria-describedby="btnNavbarSearch" />
+                                        <label for="floatingInput">Firmware</label>
+                                    </div>
+                                    {% if user.is_superuser %}
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" type="text" value="10.101.101.79" name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
+                                        <label for="floatingInput">TFTP Server</label>
+                                    </div>
+                                    {% else %}
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" disabled type="text" value="10.101.101.79" name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
+                                        <label for="floatingInput">TFTP Server</label>
+                                    </div>
+                                    {% endif %}                                
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary" type="submit">Submit</button>
+                                    </div> 
+                                </form>
                             </div>
-                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                                <div class="border-bottom w-100 ml-5"></div>
-                                <span class="px-2 text-muted font-weight-bold text-muted">OR</span>
-                                <div class="border-bottom w-100 mr-5"></div>
+                            <div class="col-lg-6">
+                                <p class="col-sm-6">This column has a border to the left</p>
                             </div>
-                            <h4 class="mt-4">Manual</h1>
-                            <div class="form-floating mb-3">
-                                <input class="form-control" value="10.210.210.117" type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
-                                <label for="floatingInput">Terminal/proxy ip</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input class="form-control" value="2004" type="text" name="port_no" placeholder="Enter Port No" aria-label="Enter Port No" aria-describedby="btnNavbarSearch" />
-                                <label for="floatingInput">Port No</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input class="form-control"  value="WC_16_10_0015.swi" type="text" name="firmware" placeholder="Enter Firmware" aria-label="Enter Firmware" aria-describedby="btnNavbarSearch" />
-                                <label for="floatingInput">Firmware</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" value="10.101.101.79" name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
-                                <label for="floatingInput">TFTP Server</label>
-                            </div>
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary" type="submit">Submit</button>
-                            </div> 
-                        </form>
+                        </div>
                     </div> 
                 </main>
                 <footer class="py-4 bg-light mt-auto">

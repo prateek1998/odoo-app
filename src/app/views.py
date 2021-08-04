@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.core.files.storage import FileSystemStorage
+from .models import Manual
 from Switches_Connecter import connecter
 from pathlib import Path
 import time
@@ -50,6 +51,8 @@ def logout_view(request):
 
 @login_required(login_url="login")
 def app_view(request):
+    posts = Manual.objects.all()
+    print(posts)# = Manual.objects.all())
     try:
         current_user = request.user
         if request.method == 'POST':
@@ -63,16 +66,42 @@ def app_view(request):
                 # connecter_Class.data_store(input_data)
             else:
                 print("inside other function")
-                connecter_Class.data_store(input_data)
-                connecter_Class.connect_telnet()
-                connecter_Class.configure_new_manager_password()
-                connecter_Class.configure_new_manager_password()
-                connecter_Class.configure_ip()
-                connecter_Class.configure_ssh()
-                connecter_Class.get_ssh_data()
-                connecter_Class.firmware_upgrade()
-                connecter_Class.copy_primaryflash_secondaryflash()
-                connecter_Class.reload()
+                if(input_data['switch_type'] == "aruba"):
+                    print("hello aruba")
+                    output_1 = connecter_Class.add()
+                    print("output1",output_1)
+                    if output_1 == "success":
+                        output_2 = connecter_Class.sub()
+                        print("output2",output_2)
+                        if output_2 ==  "success":
+                            output_3 = connecter_Class.mul()
+                            print("output3",output_3)
+                            if output_3 ==  "success":
+                                output_4 = connecter_Class.delete()
+                                print("output4",output_4)
+                                if output_4 ==  "success":
+                                    print("all done successfully")
+                                else:
+                                    print("exception in output4", output_4)            
+                            else: 
+                                print("exception in output3", output_3)    
+                        else:
+                            print("exception in output2", output_2)    
+                    else:
+                        print("exception in output1", output_1)
+                            
+                    # connecter_Class.data_store(input_data)
+                    # connecter_Class.connect_telnet()
+                    # connecter_Class.configure_new_manager_password()
+                    # connecter_Class.configure_ip()
+                    # connecter_Class.configure_ssh()
+                    # connecter_Class.get_ssh_data()
+                    # connecter_Class.firmware_upgrade()
+                    # connecter_Class.copy_primaryflash_secondaryflash()
+                    # connecter_Class.reload()
+                else: 
+                    print("hello aruba cx")
+                
         return render(request, 'appbase.html',{'current_user':current_user})
     except Exception:
         return render(request, 'appbase.html',{'current_user':current_user})
