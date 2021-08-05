@@ -29,10 +29,149 @@ class aruba_os_telnet:
         self.username = "pselvarajan@traversa.net"
         self.password = "Testing1234!"
     def data_store(self, input_data):
-        self.ip_address_aruba_telnet = input_data['proxy_ip']#10.210.210.117
-        self.port_aruba_telnet = input_data['port_no']#2004
-        self.firmware_to_upgrade = input_data['firmware']#firmware
-        self.tftp_server = input_data['tftp_server']    
+        try:
+            self.ip_address_aruba_telnet = input_data['proxy_ip']#10.210.210.117
+            self.port_aruba_telnet = input_data['port_no']#2004
+            self.firmware_to_upgrade = input_data['firmware']#firmware
+            self.tftp_server = input_data['tftp_server']    
+        except Exception as e:
+            print(e)
+    def connect_telnet(self):
+        '''
+        Create Socket
+        Output = "Object" Datatype
+        '''
+        try:
+            global telnet_socket
+            print("Creating Telnet Socket")
+            telnet_socket = telnetlib.Telnet(self.ip_address_aruba_telnet,self.port_aruba_telnet)
+            print("completed")
+        except Exception as e:
+            print(e)
+    def configure_new_manager_password(self):
+        '''
+        Config New switch username and password
+        '''
+        try:
+            print("configure_new_manager_password")
+            telnet_socket.write(b"\r\n")
+            sleep(0.5)
+            telnet_socket.write(b"\r\n")
+            sleep(4)
+            telnet_socket.write(b"admin\n")
+            sleep(2)
+            telnet_socket.write(b"Pr0curve\n")
+            sleep(2)
+            telnet_socket.write(b"Pr0curve\n")
+            print("completed")
+        except Exception as e:
+                print(e)
+    def configure_ip(self):
+        '''
+        Config IP address for vlan 4094 and assign to interface 1
+        '''
+        try:        
+            print("configurng Mgmt IP")
+            self.configuring_ip = '10.211.211.'+str(int(str(self.port_aruba_telnet)[-2:]))
+            byteipformat = ("ip address "+ self.configuring_ip +"/24\n").encode()
+            #print(self.configuring_ip)
+            telnet_socket.write(b"configure terminal\n")
+            telnet_socket.write(b"ip default-gateway 10.211.211.1\n")
+            telnet_socket.write(b"vlan 4094\n")
+            telnet_socket.write(b"untag 1\n")
+            telnet_socket.write(b"untag 1/1\n")
+            telnet_socket.write(byteipformat)#b"ip address "+ self.configuring_ip +"\n")
+            telnet_socket.write(b"end\n")
+            print("completed")
+        except Exception as e:
+                print(e)
+    def configure_ssh(self):
+        '''
+        Config SSH through telnet
+        '''
+        try:
+            print("Configuring SSH")
+            telnet_socket.write(b"configure terminal\n")
+            telnet_socket.write(b"crypto key generate ssh rsa bit 2048\n")
+            telnet_socket.write(b"ip ssh\n")
+            telnet_socket.write(b"end\n")
+            print("completed")
+        except Exception as e:
+                print(e)
+    def get_ssh_data(self):
+        '''
+        SSH device connection
+        '''
+        try:
+            global net_connect
+            print("SSH connection")
+            #Need to change host ip to be a variable
+            aruba = { 
+            'device_type': 'hp_procurve', 
+            'host':self.configuring_ip, 
+            'username': 'admin',  
+            'password': 'Pr0curve', 
+            'fast_cli': True,
+            }
+            net_connect = ConnectHandler(**aruba)
+            system = net_connect.send_command("show system")
+            serial_number = re.findall("Serial Number.*", system)
+            mac_address = re.findall("Base MAC Addr.*", system)
+            version = re.findall("Software revision.*", system)
+            serial_number_string = serial_number[0].partition(":")[-1].strip()
+            mac_address_string = mac_address[0].partition(":")[-1].strip()
+            version_string = version[0].partition(":")[-1].strip()[0:13]
+            print(serial_number_string)
+            print(mac_address_string)
+            print(version_string)
+            print("completed")
+        except Exception as e:
+            print(e)    
+    def firmware_upgrade(self):
+        '''
+        Upgrade to given firmware
+        Input = "String" Datatype
+        '''
+        try:
+            print("firmware_upgrade function")
+            final_firmware = ("copy tftp flash "+  self.tftp_server+" "+self.firmware_to_upgrade+" primary\n").encode()
+            telnet_socket.write(final_firmware)
+            telnet_socket.write(b"y\n")
+            #read until firmware is complete
+            sleep(50)
+            print("completed")
+        except Exception as e:
+            print(e)    
+    def copy_primaryflash_secondaryflash(self):
+        '''
+        Config IP address for vlan 4094 and assign to interface 1
+        '''
+        try:
+            print("copy primary flash to secondary flash")
+            sleep(20)
+            copy_pri_sec_fl = net_connect.send_config_set(['copy flash flash secondary'])
+            print(copy_pri_sec_fl)
+            sleep(20)
+            print("completed")
+        except Exception as e:
+            print(e)
+    def reload(self):
+        '''
+        Boot system to upgrade the firmware.
+        '''
+        try:
+            print("telnet rebooting the switch")
+            telnet_socket.write(b"admin\n")
+            telnet_socket.write(b"Pr0curve\n")
+            telnet_socket.write(b"kill 3\n")
+            telnet_socket.write(b"kill 2\n")
+            telnet_socket.write(b"kill 1\n")
+            telnet_socket.write(b"boot system\n")
+            telnet_socket.write(b"y\n")
+            telnet_socket.write(b"n\n")
+            print("completed")
+        except Exception as e:
+            print(e)
     def odoo_fetch_api(self, input_data):
         manu_id = input_data['odoo_id']
         #print(manu_id)
@@ -74,42 +213,6 @@ class aruba_os_telnet:
         Closes Telnet connection
         '''
         telnet_socket.close()
-    def connect_telnet(self):
-        '''
-        Create Socket
-        Output = "Object" Datatype
-        '''
-        global telnet_socket
-        telnet_socket = telnetlib.Telnet(self.ip_address_aruba_telnet,self.port_aruba_telnet)
-        print("succesfull")
-    def firmware_upgrade(self):
-        '''
-        Upgrade to given firmware
-        Input = "String" Datatype
-        '''
-        print("firmware_upgrade function")
-        final_firmware = ("copy tftp flash "+  self.tftp_server+" "+self.firmware_to_upgrade+" primary\n").encode()
-        telnet_socket.write(final_firmware)
-        telnet_socket.write(b"y\n")
-        #read until firmware is complete
-        sleep(160)
-        print("completed")
-    def configure_ip(self):
-        '''
-        Config IP address for vlan 4094 and assign to interface 1
-        '''
-        print("configurng Mgmt IP")
-        self.configuring_ip = '10.211.211.'+str(int(str(self.port_aruba_telnet)[-2:]))
-        byteipformat = ("ip address "+ self.configuring_ip +"/24\n").encode()
-        #print(self.configuring_ip)
-        telnet_socket.write(b"configure terminal\n")
-        telnet_socket.write(b"ip default-gateway 10.211.211.1\n")
-        telnet_socket.write(b"vlan 4094\n")
-        telnet_socket.write(b"untag 1\n")
-        telnet_socket.write(b"untag 1/1\n")
-        telnet_socket.write(byteipformat)#b"ip address "+ self.configuring_ip +"\n")
-        telnet_socket.write(b"end\n")
-        print("completed")
     def remove_ip(self, te):
         '''
         Config IP address for vlan 4094 and assign to interface 1
@@ -121,77 +224,7 @@ class aruba_os_telnet:
         telnet_socket.write(b"no vlan 4094\n")
         telnet_socket.write(b"y\n")        
         print("completed")
-    def copy_primaryflash_secondaryflash(self):
-        '''
-        Config IP address for vlan 4094 and assign to interface 1
-        '''
-        print("copy primary flash to secondary flash")
-        copy_pri_sec_fl = net_connect.send_config_set(['copy flash flash secondary'])
-        print(copy_pri_sec_fl)
-        print("completed")
-    def reload(self):
-        '''
-        Boot system to upgrade the firmware.
-        '''
-        print("rebooting the switch")
-        sleep(20)
-        telnet_socket.write(b"boot system\n")
-        telnet_socket.write(b"y\n")
-        telnet_socket.write(b"n\n")
-        print("completed")
-    def configure_new_manager_password(self):
-        '''
-        Config New switch username and password
-        '''
-        print("configure_new_manager_password")
-        telnet_socket.write(b"\r\n")
-        sleep(0.5)
-        telnet_socket.write(b"\r\n")
-        sleep(2)
-        telnet_socket.write(b"admin\n")
-        sleep(1)
-        telnet_socket.write(b"Pr0curve\n")
-        sleep(1)
-        telnet_socket.write(b"Pr0curve\n")
-        print("completed")
-    def configure_ssh(self):
-        '''
-        Config SSH through telnet
-        '''
-        print("Configuring SSH")
-        telnet_socket.write(b"configure terminal\n")
-        telnet_socket.write(b"crypto key generate ssh rsa bit 2048\n")
-        telnet_socket.write(b"ip ssh\n")
-        telnet_socket.write(b"end\n")
-        print("completed")
-    def get_ssh_data(self):
-        '''
-        SSH device connection
-        '''
-        try:
-            global net_connect
-            print("SSH connection")
-            #Need to change host ip to be a variable
-            aruba = { 
-            'device_type': 'hp_procurve', 
-            'host':self.configuring_ip, 
-            'username': 'admin',  
-            'password': 'Pr0curve', 
-            }
-            net_connect = ConnectHandler(**aruba)
-            system = net_connect.send_command("show system")
-            serial_number = re.findall("Serial Number.*", system)
-            mac_address = re.findall("Base MAC Addr.*", system)
-            version = re.findall("Software revision.*", system)
-            serial_number_string = serial_number[0].partition(":")[-1].strip()
-            mac_address_string = mac_address[0].partition(":")[-1].strip()
-            version_string = version[0].partition(":")[-1].strip()[0:13]
-            print(serial_number_string)
-            print(mac_address_string)
-            print(version_string)
-        except Exception as e:
-            print(e)    
-
+    
     def add(self):
         try:
             a = 4

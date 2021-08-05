@@ -1,11 +1,16 @@
-/*!
-    * Start Bootstrap - SB Admin v7.0.2 (https://startbootstrap.com/template/sb-admin)
-    * Copyright 2013-2021 Start Bootstrap
-    * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin/blob/master/LICENSE)
-    */
-    // 
-// Scripts
-// 
+const spinnerCircle = document.getElementById('spinner-circle')
+
+$.ajax({
+    type: 'POST',
+    url: '',
+    success: function(response){
+        spinnerCircle.classList.add('not-visible')
+        console.log(response)
+    },
+    error: function(error){
+        console.log(error)
+    }
+})
 
 window.addEventListener('DOMContentLoaded', event => {
 

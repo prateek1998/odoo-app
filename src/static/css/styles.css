@@ -4451,6 +4451,41 @@ textarea.form-control-lg {
   border-bottom-right-radius: calc(0.25rem - 1px);
   border-bottom-left-radius: calc(0.25rem - 1px);
 }
+.loader{
+  width: 160px;
+  height: 160px;
+  margin: 50px auto 0;
+  border-top: 16px solid #ff6326;
+  border-right: 16px solid transparent;
+  border-radius: 50%;
+  position: relative;
+  animation: round 1s linear infinite;
+}
+.not-visible{
+  display: none;
+}
+.loader:before{
+  content: '';
+  background-color: #ff6326;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+@keyframes round{
+  100%{ transform: rotate(360deg); }
+}
+.green-tag{
+  background-color: #ccfed8 !important;
+  color: #43ce81;
+}
+
+.red-tag{
+  background-color: #ffaeb2 !important;
+  color: #ea5455;
+}
 
 .card-group > .card {
   margin-bottom: 0.75rem;
