@@ -16,6 +16,6 @@ scp==0.13.6
 six==1.16.0
 sqlparse==0.4.1
 strip-ansi==0.1.1
-sweetify==2.0.0
+sweetify==2.1.0
 tenacity==8.0.1
 textfsm==1.1.2
