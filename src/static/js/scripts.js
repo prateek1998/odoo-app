@@ -1,16 +1,82 @@
-const spinnerCircle = document.getElementById('spinner-circle')
-
-$.ajax({
-    type: 'POST',
-    url: '',
-    success: function(response){
-        spinnerCircle.classList.add('not-visible')
-        console.log(response)
-    },
-    error: function(error){
-        console.log(error)
-    }
-})
+function showAlert(){
+    const steps = [1, 2, 3, 4, 5, 6, 7]
+    const swalQueue = Swal.mixin({
+        progressSteps: steps,
+        onBeforeOpen: () => {
+            Swal.showLoading()
+        }
+    })
+    swalQueue.fire({
+        title: 'Please Wait !', 
+        html: 'data uploading', 
+        allowOutsideClick: false,
+        timer: 1000,
+        currentProgressStep: 0 
+    })
+    .then(function(){ 
+        swalQueue.fire({
+            title: 'Please Wait !', 
+            html: 'Creating Telnet Socket',
+            allowOutsideClick: false,  
+            timer: 1000,
+            currentProgressStep: 1
+        })
+        .then(function() {
+            swalQueue.fire({
+                title: 'Please Wait !', 
+                html: 'Configuring User and Password',
+                allowOutsideClick: false,  
+                timer: 8000,
+                currentProgressStep: 2
+            })
+            .then(function() {
+                swalQueue.fire({
+                    title: 'Please Wait !', 
+                    html: 'Configuring Management IP',
+                    allowOutsideClick: false,  
+                    timer: 1000,
+                    currentProgressStep: 3
+                })
+                .then(function() {
+                    swalQueue.fire({
+                        title: 'Please Wait !', 
+                        html: 'Configuring SSH and creating SSH Connection',
+                        allowOutsideClick: false,  
+                        timer: 2000,
+                        currentProgressStep: 4
+                    })
+                    .then(function() {
+                        swalQueue.fire({
+                            title: 'Please Wait !', 
+                            html: 'Firmware Upgrading ',
+                            allowOutsideClick: false,  
+                            timer: 50000,
+                            currentProgressStep: 5
+                        })  
+                        .then(function() {
+                            swalQueue.fire({
+                                title: 'Please Wait !', 
+                                html: 'Copying Primary flash to Secondary flash',
+                                allowOutsideClick: false,  
+                                timer: 20000,
+                                currentProgressStep: 6
+                            })
+                            .then(function() {
+                                swalQueue.fire({
+                                    title: 'Please Wait !', 
+                                    html: 'Performing Rebooting Switch',
+                                    allowOutsideClick: false,  
+                                    timer: 2000,
+                                    currentProgressStep: 7
+                                })
+                            })  
+                        })  
+                    })  
+                })
+            })
+        })
+    })    
+}
 
 window.addEventListener('DOMContentLoaded', event => {
 

@@ -107,10 +107,17 @@
                                         maxlength="4" type="number" name="port_no" placeholder="Enter Port No" aria-label="Enter Port No" aria-describedby="btnNavbarSearch" />
                                         <label for="floatingInput">Port No</label>
                                     </div>
+                                    {% if user.is_superuser %}
                                     <div class="form-floating mb-3">
                                         <input class="form-control"  value={{manual_data.firmware}} type="text" name="firmware" placeholder="Enter Firmware" aria-label="Enter Firmware" aria-describedby="btnNavbarSearch" />
                                         <label for="floatingInput">Firmware</label>
                                     </div>
+                                    {% else %}
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" disabled value={{manual_data.firmware}} type="text" name="firmware" placeholder="Enter Firmware" aria-label="Enter Firmware" aria-describedby="btnNavbarSearch" />
+                                        <label for="floatingInput">Firmware</label>
+                                    </div>
+                                    {% endif %}        
                                     {% if user.is_superuser %}
                                     <div class="form-floating mb-3">
                                         <input class="form-control" type="text" value={{manual_data.tftp_server}} name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
@@ -121,9 +128,14 @@
                                         <input class="form-control" disabled type="text" value={{manual_data.tftp_server}} name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />
                                         <label for="floatingInput">TFTP Server</label>
                                     </div>
-                                    {% endif %}                                
+                                    {% endif %}        
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" value={{manual_data.stack_no}} oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                        maxlength="4" type="number" name="stack_no" placeholder="Enter Stack No" aria-label="Enter Stack No" aria-describedby="btnNavbarSearch" />
+                                        <label for="floatingInput">Stack No</label>
+                                    </div>                               
                                     <div class="d-grid gap-2">
-                                        <button class="btn btn-primary" type="submit">Submit</button>
+                                        <button class="btn btn-primary" onclick="showAlert()" type="submit">Submit</button>
                                     </div> 
                                 </form>
                             </div>
@@ -140,6 +152,8 @@
                                                     <th>S.No</th>
                                                     <th>Switch Vendor</th>
                                                     <th>Time</th>
+                                                    <th>Serial</th>
+                                                    <th>Stack No</th>
                                                     <th>Old Firmware</th>
                                                     <th>Mac Address</th>
                                                     <th>New Firmware</th>
@@ -151,6 +165,8 @@
                                                     <th>S.No</th>
                                                     <th>Switch Vendor</th>
                                                     <th>Time</th>
+                                                    <th>Serial</th>
+                                                    <th>Stack No</th>
                                                     <th>Old Firmware</th>
                                                     <th>Mac Address</th>
                                                     <th>New Firmware</th>
@@ -163,15 +179,16 @@
                                                     <td>{{firmware_entry.id}}</td>
                                                     <td>{{firmware_entry.switch_vendor}}</td>
                                                     <td>{{firmware_entry.time}}</td>
+                                                    <td>{{firmware_entry.serial}}</td>
+                                                    <td>{{firmware_entry.stack_no}}</td>
                                                     <td>{{firmware_entry.old_firmware}}</td>
                                                     <td>{{firmware_entry.mac_address}}</td>
                                                     <td>{{firmware_entry.new_firmware}}</td>
-                                                    {% if firmware_entry.status == "good" %}
+                                                    {% if firmware_entry.status == "success" %}
                                                         <td class ="green-tag">{{firmware_entry.status}}</td>
                                                     {% else %}
                                                         <td class ="red-tag">{{firmware_entry.status}}</td>
-                                                    {% endif %}
-                                                    
+                                                    {% endif %}                                       
                                                 </tr>
                                                 {% endfor %}                                                
                                             </tbody>
@@ -195,6 +212,10 @@
                                 <div class="form-floating mb-3">
                                     <input class="form-control" value={{manual_data.proxy_ip}} type="text" name="proxy_ip" placeholder="Enter proxy Ip" aria-label="Enter proxy Ip " aria-describedby="btnNavbarSearch" />
                                     <label for="floatingInput">Terminal/proxy ip</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input class="form-control"  value={{manual_data.firmware}} type="text" name="firmware" placeholder="Enter Firmware" aria-label="Enter Firmware" aria-describedby="btnNavbarSearch" />
+                                    <label for="floatingInput">Firmware</label>
                                 </div>
                                 <div class="form-floating mb-3">
                                     <input class="form-control" type="text" value={{manual_data.tftp_server}} name="tftp_server" placeholder="Enter TFTP Server" aria-label="Enter TFTP Server" aria-describedby="btnNavbarSearch" />

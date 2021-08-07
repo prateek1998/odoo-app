@@ -8,7 +8,6 @@ from django.core.files.storage import FileSystemStorage
 from .models import Manual, Firmware_Records
 from Switches_Connecter import connecter
 from pathlib import Path
-import json
 import time
 # Create your views here.
 
@@ -54,7 +53,7 @@ def logout_view(request):
 @login_required(login_url="login")
 def app_view(request):
     manual_data = list(Manual.objects.values())[0]
-    firmware_tableArray = list(Firmware_Records.objects.values())
+    firmware_tableArray = list(Firmware_Records.objects.values().order_by("-time"))
     # print(firmware_tableArray)
     try:
         if request.method == 'POST':
@@ -69,30 +68,10 @@ def app_view(request):
             else:
                 print("inside other function")
                 if(input_data['switch_type'] == "aruba"):
-                    print("hello aruba")
-                    # output_1 = connecter_Class.add()
-                    # print("output1",output_1)
-                    # if output_1 == "success":
-                    #     output_2 = connecter_Class.sub()
-                    #     print("output2",output_2)
-                    #     if output_2 ==  "success":
-                    #         output_3 = connecter_Class.mul()
-                    #         print("output3",output_3)
-                    #         if output_3 ==  "success":
-                    #             output_4 = connecter_Class.delete()
-                    #             print("output4",output_4)
-                    #             if output_4 ==  "success":
-                    #                 print("all done successfully")
-                    #             else:
-                    #                 print("exception in output4", output_4)            
-                    #         else: 
-                    #             print("exception in output3", output_3)    
-                    #     else:
-                    #         print("exception in output2", output_2)    
-                    # else:
-                    #     print("exception in output1", output_1)
-                    # print("ASDAsdad")
-                            
+                    # connecter_Class.add()
+                    # connecter_Class.sub()
+                    # connecter_Class.mul()
+                    # connecter_Class.delete()
                     connecter_Class.data_store(input_data)
                     connecter_Class.connect_telnet()
                     connecter_Class.configure_new_manager_password()
@@ -101,16 +80,17 @@ def app_view(request):
                     connecter_Class.get_ssh_data()
                     connecter_Class.firmware_upgrade()
                     connecter_Class.copy_primaryflash_secondaryflash()
+                    connecter_Class.connect_telnet()
                     connecter_Class.reload()
-                    sweetify.error(request, 'Firmware Updated Successfully', text='Good job! You successfully updated the Firmware',icon='success', persistent="Ok")
-                    
-                    # <!-- {% for firmware_entry in firmware_tableArray %} -->
-                                                
+                    sweetify.success(request, 'Firmware Updated Successfully', text='Good job! You successfully upgraded the Firmware',icon='success', persistent="Ok")                                                                    
                 else: 
                     print("hello aruba cx")
                 
         return render(request, 'appbase.html',{"manual_data":manual_data,"firmware_tableArray":firmware_tableArray})
-    except Exception:
+    except Exception as err:
+        error_msg = 'Check error: '+ str(err)
+        print(error_msg)
+        sweetify.error(request, 'Firmware Not Updated ', text=error_msg,icon='error', persistent="Ok")
         return render(request, 'appbase.html',{"manual_data":manual_data,"firmware_tableArray":firmware_tableArray})
 
 def edit_manual(request):
@@ -120,8 +100,9 @@ def edit_manual(request):
             input_data = request.POST
             input_data = input_data.dict()
             manual_data = Manual.objects.get(id=manual_data['id'])
-            # print(manual_data.proxy_ip)
+            print(input_data)
             manual_data.proxy_ip = input_data['proxy_ip']
+            manual_data.firmware = input_data['firmware']
             manual_data.tftp_server = input_data['tftp_server']
             manual_data.save()
             sweetify.success(request, 'Updated Successfully', text='Good job! You successfully updated the manual data',icon='success',persistent="Ok")

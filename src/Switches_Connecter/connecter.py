@@ -13,10 +13,6 @@ import xmlrpc.client
 #password = "Testing1234!"
 #create function
 
-#STEPS:
-#1. Enter odoo ID in UI and fetch data using function(PORT,FIRMWARE).
-#2. Connect function to pass vars from one function to other.
-#3. Parse and display result from switch to UI
 class aruba_os_telnet:
     def __init__(self):
         self.ip_address_aruba_telnet = ''#10.210.210.117
@@ -30,12 +26,16 @@ class aruba_os_telnet:
         self.password = "Testing1234!"
     def data_store(self, input_data):
         try:
+            print("Uploading Data in store")
             self.ip_address_aruba_telnet = input_data['proxy_ip']#10.210.210.117
             self.port_aruba_telnet = input_data['port_no']#2004
             self.firmware_to_upgrade = input_data['firmware']#firmware
             self.tftp_server = input_data['tftp_server']    
+            sleep(0.5)
+            print("completed")
         except Exception as e:
             print(e)
+            raise e
     def connect_telnet(self):
         '''
         Create Socket
@@ -48,6 +48,7 @@ class aruba_os_telnet:
             print("completed")
         except Exception as e:
             print(e)
+            raise e
     def configure_new_manager_password(self):
         '''
         Config New switch username and password
@@ -65,7 +66,8 @@ class aruba_os_telnet:
             telnet_socket.write(b"Pr0curve\n")
             print("completed")
         except Exception as e:
-                print(e)
+            print(e)
+            raise e
     def configure_ip(self):
         '''
         Config IP address for vlan 4094 and assign to interface 1
@@ -84,7 +86,8 @@ class aruba_os_telnet:
             telnet_socket.write(b"end\n")
             print("completed")
         except Exception as e:
-                print(e)
+            print(e)
+            raise e
     def configure_ssh(self):
         '''
         Config SSH through telnet
@@ -97,7 +100,8 @@ class aruba_os_telnet:
             telnet_socket.write(b"end\n")
             print("completed")
         except Exception as e:
-                print(e)
+            print(e)
+            raise e
     def get_ssh_data(self):
         '''
         SSH device connection
@@ -126,7 +130,8 @@ class aruba_os_telnet:
             print(version_string)
             print("completed")
         except Exception as e:
-            print(e)    
+            print(e)
+            raise e
     def firmware_upgrade(self):
         '''
         Upgrade to given firmware
@@ -141,7 +146,8 @@ class aruba_os_telnet:
             sleep(50)
             print("completed")
         except Exception as e:
-            print(e)    
+            print(e)
+            raise e
     def copy_primaryflash_secondaryflash(self):
         '''
         Config IP address for vlan 4094 and assign to interface 1
@@ -155,6 +161,7 @@ class aruba_os_telnet:
             print("completed")
         except Exception as e:
             print(e)
+            raise e
     def reload(self):
         '''
         Boot system to upgrade the firmware.
@@ -172,6 +179,7 @@ class aruba_os_telnet:
             print("completed")
         except Exception as e:
             print(e)
+            raise e
     def odoo_fetch_api(self, input_data):
         manu_id = input_data['odoo_id']
         #print(manu_id)
@@ -227,10 +235,12 @@ class aruba_os_telnet:
     
     def add(self):
         try:
+            sleep(2)
             a = 4
             b = 6
             sum = a+ b
-            return "success"
+            sleep(2)
+            print("add success")
         except Exception as e:
             print(e)
     def sub(self):
@@ -238,17 +248,18 @@ class aruba_os_telnet:
             a = 44
             b = 14
             sum = a- b
-            sleep(3)
-            return "success"
+            sleep(2)
+            print("sub success")
         except Exception as e:
             print(e)
+            raise e
     def mul(self):
         try:
             a = 4
             b = 6
             sum = a * b
-            sleep(3)
-            return "success"
+            sleep(2)
+            print("mul success")
         except Exception as e:
             print(e)
     def delete(self):
@@ -257,39 +268,7 @@ class aruba_os_telnet:
             b = 6
             sum = 10 * (1/0)
             sleep(4)
-            return "success"
+            print("delete success")
         except Exception as e:
-            return e
-
-# 10.210.210.251 ---> file server ip
-
-# 10.210.210.117 ---> terminal/proxy server
-
-#Steppers
-# 1. check the connection status from odoo.
-# 2. Received data from odoo server.
-# 3. Connection web server and switch (telnet connect function).
-# 4. upgrading firmware (firmware_upgrade).
-# 5. firmware upgraded.
-
-
-# Table
-# 1.s no
-# 2.time
-# 3. old firmware ---> 
-# 4. new firmware
-# 5. modal of switch
-# 6. status
-
-# test = aruba_os_telnet()
-# test.odoo_fetch_api()
-# #switch A
-# #test = aruba_os_telnet("10.210.210.117",2005) #switch B
-# test.connect_telnet()
-# #test.send_telnet_commands("sh version")
-
-# #print(result)
-# test.firmware_upgrade()
-# result = test.read_telnet_commands()
-# print(result)
-# #test.close_telnet_connection()
+            raise e
+            pass
