@@ -24,13 +24,19 @@ class aruba_os_telnet:
         self.db = "traversa-odoo-traversa-uat-2889919"
         self.username = "pselvarajan@traversa.net"
         self.password = "Testing1234!"
+        self.output_Data = {}
     def data_store(self, input_data):
         try:
             print("Uploading Data in store")
             self.ip_address_aruba_telnet = input_data['proxy_ip']#10.210.210.117
             self.port_aruba_telnet = input_data['port_no']#2004
             self.firmware_to_upgrade = input_data['firmware']#firmware
-            self.tftp_server = input_data['tftp_server']    
+            self.tftp_server = input_data['tftp_server']
+            self.output_data = {
+                "switch_vendor" : input_data['switch_vendor'],
+                "new_firmware" : input_data['firmware'],
+                "stack_no" : input_data['stack_no']
+            }
             sleep(0.5)
             print("completed")
         except Exception as e:
@@ -125,9 +131,12 @@ class aruba_os_telnet:
             serial_number_string = serial_number[0].partition(":")[-1].strip()
             mac_address_string = mac_address[0].partition(":")[-1].strip()
             version_string = version[0].partition(":")[-1].strip()[0:13]
-            print(serial_number_string)
-            print(mac_address_string)
-            print(version_string)
+            self.output_data["serial"] = serial_number_string
+            self.output_data["old_firmware"] = version_string
+            self.output_data["mac_address"] = mac_address_string
+            #print(serial_number_string)
+            #print(mac_address_string)
+            #print(version_string)
             print("completed")
         except Exception as e:
             print(e)
@@ -177,9 +186,16 @@ class aruba_os_telnet:
             telnet_socket.write(b"y\n")
             telnet_socket.write(b"n\n")
             print("completed")
+            self.output_data["status"] = "success"
+            return self.output_data
         except Exception as e:
             print(e)
             raise e
+    def data_sender(self):
+        self.output_data["status"] = "error"
+        #print(self.output_data)
+        return self.output_data
+
     def odoo_fetch_api(self, input_data):
         manu_id = input_data['odoo_id']
         #print(manu_id)

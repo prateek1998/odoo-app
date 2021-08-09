@@ -67,11 +67,11 @@ def app_view(request):
                 # connecter_Class.data_store(input_data)
             else:
                 print("inside other function")
-                if(input_data['switch_type'] == "aruba"):
-                    # connecter_Class.add()
-                    # connecter_Class.sub()
-                    # connecter_Class.mul()
-                    # connecter_Class.delete()
+                if(input_data['switch_vendor'] == "Aruba"):
+                    #connecter_Class.add()
+                    #connecter_Class.sub()
+                    #connecter_Class.mul()
+                    #connecter_Class.delete()
                     connecter_Class.data_store(input_data)
                     connecter_Class.connect_telnet()
                     connecter_Class.configure_new_manager_password()
@@ -81,17 +81,28 @@ def app_view(request):
                     connecter_Class.firmware_upgrade()
                     connecter_Class.copy_primaryflash_secondaryflash()
                     connecter_Class.connect_telnet()
-                    connecter_Class.reload()
+                    output_data = connecter_Class.reload()
+                    print(output_data)
+                    new_firmware = Firmware_Records(**output_data)
+                    new_firmware.save()
                     sweetify.success(request, 'Firmware Updated Successfully', text='Good job! You successfully upgraded the Firmware',icon='success', persistent="Ok")                                                                    
+                    return home_view(request)
                 else: 
                     print("hello aruba cx")
-                
+
+                   
+
         return render(request, 'appbase.html',{"manual_data":manual_data,"firmware_tableArray":firmware_tableArray})
     except Exception as err:
         error_msg = 'Check error: '+ str(err)
+        output_data = connecter_Class.data_sender()
+        print(output_data)
+        new_firmware = Firmware_Records(**output_data)
+        new_firmware.save()
         print(error_msg)
         sweetify.error(request, 'Firmware Not Updated ', text=error_msg,icon='error', persistent="Ok")
-        return render(request, 'appbase.html',{"manual_data":manual_data,"firmware_tableArray":firmware_tableArray})
+        return home_view(request)
+        #return render(request, 'appbase.html',{"manual_data":manual_data,"firmware_tableArray":firmware_tableArray})
 
 def edit_manual(request):
     manual_data = list(Manual.objects.values())[0]

@@ -34,7 +34,7 @@ function showAlert(){
                     title: 'Please Wait !', 
                     html: 'Configuring Management IP',
                     allowOutsideClick: false,  
-                    timer: 1000,
+                    timer: 5000,
                     currentProgressStep: 3
                 })
                 .then(function() {
@@ -58,7 +58,7 @@ function showAlert(){
                                 title: 'Please Wait !', 
                                 html: 'Copying Primary flash to Secondary flash',
                                 allowOutsideClick: false,  
-                                timer: 20000,
+                                timer: 30000,
                                 currentProgressStep: 6
                             })
                             .then(function() {
@@ -66,7 +66,7 @@ function showAlert(){
                                     title: 'Please Wait !', 
                                     html: 'Performing Rebooting Switch',
                                     allowOutsideClick: false,  
-                                    timer: 2000,
+                                    timer: 30000,
                                     currentProgressStep: 7
                                 })
                             })  
